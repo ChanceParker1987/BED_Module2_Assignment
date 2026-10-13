@@ -9,3 +9,19 @@ export const getAllTickets = async (): Promise<Ticket[]> => {
   return structuredClone(tickets);
 };
 
+/**
+ * Finds an existing ticket by id
+ * @param id - The ID of the ticket 
+ * @returns The ticket with given id
+ */
+export const findTicketById = async (
+    id: number,
+): Promise<Ticket | undefined> => {
+    const ticket = tickets.find((ticket: Ticket) => ticket.id === id);
+
+    if (!ticket) {
+        return undefined;
+    }
+
+    return structuredClone(ticket);
+};

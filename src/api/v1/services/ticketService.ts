@@ -25,3 +25,27 @@ export const findTicketById = async (
 
     return structuredClone(ticket);
 };
+
+/**
+ * Creates a new ticket
+ * @param ticketData - The data for the new ticket 
+ * @returns The created ticket with generated ID
+ */
+export const createTicket = async (ticketData: {
+  title: string;
+  description: string;
+  priority: "critical" | "high" | "medium" | "low";
+}): Promise<Ticket> => {
+  // Create a new ticket with auto-generated ID
+  const newTicket: Ticket = {
+    id: tickets.length + 1,
+    title: ticketData.title,
+    description: ticketData.description,
+    priority: ticketData.priority,
+    status: "open",
+    createdAt: new Date().toISOString()         
+  };
+
+  tickets.push(newTicket);
+  return structuredClone(newTicket);
+};

@@ -40,7 +40,7 @@ export const tickets: Ticket[] = [
 
     {
         id: 4,
-        title: "Password reset  email delayed",
+        title: "Password reset email delayed",
         description: "Reset emails taking over 30 minutes",
         priority: "high",
         status: "open",

@@ -49,3 +49,30 @@ export const createTicket = async (ticketData: {
   tickets.push(newTicket);
   return structuredClone(newTicket);
 };
+
+/**
+ * Updates an existing ticket
+ * @param id - The ID of the ticket to update
+ * @param ticketData - The fields to update (priority and/or status)
+ * @returns The updated ticket
+ * @throws Error if ticket with given ID is not found
+ */
+export const updateTicket = async (
+  id: number,
+  ticketData: Partial<Pick<Ticket, "priority" | "status">>
+): Promise<Ticket> => {
+  const index: number = tickets.findIndex((ticket: Ticket) => ticket.id === id);
+
+  if (index === -1) {
+    throw new Error(`Ticket with ID ${id} not found`);
+  }
+
+  // Update the item with the provided fields
+  tickets[index] = {
+    ...tickets[index],
+    ...ticketData,
+  };
+
+  return structuredClone(tickets[index]);
+};
+

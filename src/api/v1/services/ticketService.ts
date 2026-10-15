@@ -90,3 +90,49 @@ export const deleteTicket = async (id: number): Promise<void> => {
 
   tickets.splice(index, 1);
 };
+
+
+export function getTicketUrgency(id: number,) {
+    // Find ticket by id, if no ticket exists, return undefined
+    const ticket = tickets.find((ticket: Ticket) => ticket.id === id);
+    if (!ticket) {
+    return undefined;
+    }
+    // Calculate ticket age
+    const ticketAge = Math.floor(
+        (Date.now() - Date.parse(ticket.createdAt)) / 86400000
+    );
+
+    const baseScores = {
+    critical: 50,
+    high: 30,
+    medium: 20,
+    low: 10
+    };
+
+const baseScore = baseScores[ticket.priority];
+    
+    // Calculate urgency score
+    const urgencyScore = 
+        ticketAge === 0 ? 0 : Math.floor(
+            (baseScore + (ticketAge *5)));
+    // Assign urgency level with message based on urgency score
+    const urgencyLevel: string = 
+        urgencyScore >= 50
+        ? "critical":
+        urgencyScore <= 30
+        ? "high":
+        urgencyScore <= 20
+        ? "medium":
+        urgencyScore <= 10
+        ?  "low":
+        urgencyScore === 0
+          "Minimal. Ticket Resolved."
+          
+    return {
+        ...ticket,
+        ticketAge,
+        urgencyScore,
+        urgencyLevel,
+    };
+}

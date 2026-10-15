@@ -19,3 +19,25 @@ export const getAllTickets = async (
   }
 };
 
+export const getTicketByID = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const id = Number(req.params.id);
+    const ticket = await ticketService.findTicketById(id);
+    if (!ticket) {
+    res.status(HTTP_STATUS.NOT_FOUND).json({
+        message: "Ticket not found",
+    });
+    return;
+    }
+    res.status(HTTP_STATUS.OK).json({
+        message: "Ticket retrieved",
+        data: ticket,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

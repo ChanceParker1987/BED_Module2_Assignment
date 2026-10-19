@@ -107,7 +107,7 @@ export const updateTicket = async (
         message: "Invalid ticket ID",
     });
     return;
-}
+    }
 
     const existingTicket = await ticketService.findTicketById(id);
 
@@ -158,4 +158,35 @@ export const updateTicket = async (
     } catch (error) {
         next(error);
     };
+};
+
+export const deleteTicket = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id) || id <= 0) {
+    res.status(HTTP_STATUS.BAD_REQUEST).json({
+        message: "Invalid ticket ID",
+    });
+    return;
+    }
+    const existingTicket = await ticketService.findTicketById(id);
+
+    if (!existingTicket) {
+        res.status(HTTP_STATUS.NOT_FOUND).json({
+            message: "Ticket not found",
+        });
+        return;
+    }
+    await ticketService.deleteTicket(id);
+    res.status(HTTP_STATUS.OK).json({
+    message: "Ticket deleted successfully",
+    });
+    } catch (error) {
+        next(error);
+    }
 };

@@ -94,3 +94,68 @@ export const createTicket = async (
         next(error);
     }
 };
+
+export const updateTicket = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id <= 0) {
+    res.status(HTTP_STATUS.BAD_REQUEST).json({
+        message: "Invalid ticket ID",
+    });
+    return;
+}
+
+    const existingTicket = await ticketService.findTicketById(id);
+
+    if (!existingTicket) {
+        res.status(HTTP_STATUS.NOT_FOUND).json({
+            message: "Ticket not found",
+        });
+        return;
+    }
+    // Extract update fields
+    const { priority, status } = req.body;
+    // Validate priority field
+    const validPriorities = ["critical", "high", "medium", "low"];
+
+    if (priority !== undefined && !validPriorities.includes(priority)) {
+        res.status(HTTP_STATUS.BAD_REQUEST).json({
+            message: "Invalid ticket priority",
+        });
+        return;
+    }
+    // Validate status field
+        const validStatus = ["open", "in-progress", "resolved"];
+
+    if (status !== undefined && !validStatus.includes(status)) {
+        res.status(HTTP_STATUS.BAD_REQUEST).json({
+            message: "Invalid ticket status",
+        });
+        return;
+    }
+
+    if (priority === undefined && status === undefined) {
+    res.status(HTTP_STATUS.BAD_REQUEST).json({
+        message: "At least one update field is required",
+    });
+    return;
+    }
+    // Create update data object with only the fields that can be updated
+    const updateData = {
+        ...(priority !== undefined && { priority }),
+        ...(status !== undefined && { status }),
+    };
+
+    const updatedTicket: Ticket = await ticketService.updateTicket(id, updateData);
+    res.status(HTTP_STATUS.OK).json({
+      message: "Ticket updated successfully",
+      data: updatedTicket,
+    });
+    } catch (error) {
+        next(error);
+    };
+};

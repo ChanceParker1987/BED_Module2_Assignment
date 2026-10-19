@@ -1,6 +1,6 @@
 import express, { Express } from "express";
 import morgan from "morgan";
-//import itemRoutes from "./api/v1/routes/itemRoutes";
+import  ticketRoutes from "./api/v1/routes/ticketRoutes"
 
 const app: Express = express();
 
@@ -38,7 +38,8 @@ app.get("/api/v1/health", (req, res) => {
   res.json(healthData);
 });
 
-// Modular route for items
-//app.use("/api/v1/items", itemRoutes);
+// Modular route for tickets
+app.use("/api/v1/tickets", ticketRoutes);
 
 export default app;
+

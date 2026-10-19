@@ -63,18 +63,12 @@ export const createTicket = async (
             return;
         }
 
-        if (!req.body.priority) {
-            res.status(HTTP_STATUS.BAD_REQUEST).json({
-                message: "Missing required field: priority",
-            });
-            return;
-        }
         // Validate priority
         const validPriorities = ["critical", "high", "medium", "low"];
 
         if (!validPriorities.includes(req.body.priority)) {
             res.status(HTTP_STATUS.BAD_REQUEST).json({
-                message: "Invalid ticket priority",
+                message: "Invalid priority. Must be one of: critical, high, medium, low",
             });
             return;
         }
@@ -124,7 +118,7 @@ export const updateTicket = async (
 
     if (priority !== undefined && !validPriorities.includes(priority)) {
         res.status(HTTP_STATUS.BAD_REQUEST).json({
-            message: "Invalid ticket priority",
+            message: "Invalid priority. Must be one of: critical, high, medium, low",
         });
         return;
     }
@@ -133,7 +127,7 @@ export const updateTicket = async (
 
     if (status !== undefined && !validStatus.includes(status)) {
         res.status(HTTP_STATUS.BAD_REQUEST).json({
-            message: "Invalid ticket status",
+            message: "Invalid status. Must be one of: open, in-progress, resolved",
         });
         return;
     }

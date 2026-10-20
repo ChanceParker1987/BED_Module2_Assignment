@@ -40,4 +40,71 @@ describe("Ticket Routes", () => {
             expect(controller.getTicketByID).toHaveBeenCalled();
         });
     });
+
+    describe("POST /api/v1/tickets", () => {
+        it("should call createTicket controller", async () => {
+            jest.mocked(controller.createTicket).mockImplementation(
+                async (_req, res) => {
+                    res.status(201).json({ message: "Ticket created successfully" });
+                }
+            );
+
+            await request(app)
+                .post("/api/v1/tickets")
+                .send({
+                    title: "Laptop overheating",
+                    description: "Laptop fan running constantly",
+                    priority: "high"
+                });
+
+            expect(controller.createTicket).toHaveBeenCalled();
+        });
+    });
+
+    describe("PUT /api/v1/tickets/:id", () => {
+        it("should call updateTicket controller", async () => {
+            jest.mocked(controller.updateTicket).mockImplementation(
+                async (_req, res) => {
+                    res.status(200).json({ message: "Ticket updated successfully" });
+                }
+            );
+
+            await request(app)
+                .put("/api/v1/tickets/4")
+                .send({
+                    priority: "critical",
+                    status: "in-progress"
+                });
+
+            expect(controller.updateTicket).toHaveBeenCalled();
+        });
+    });
+
+    describe("DELETE /api/v1/tickets/:id", () => {
+        it("should call deleteTicket controller", async () => {
+            jest.mocked(controller.deleteTicket).mockImplementation(
+                async (_req, res) => {
+                    res.status(200).json({ message: "Ticket deleted successfully" });
+                }
+            );
+
+            await request(app).delete("/api/v1/tickets/4");
+
+            expect(controller.deleteTicket).toHaveBeenCalled();
+        });
+    });
+
+    describe("GET /api/v1/tickets/:id/urgency", () => {
+        it("should call getTicketUrgency controller", async () => {
+            jest.mocked(controller.getTicketUrgency).mockImplementation(
+                async (_req, res) => {
+                    res.status(200).json({ message: "Ticket urgency calculated" });
+                }
+            );
+
+            await request(app).get("/api/v1/tickets/4/urgency");
+
+            expect(controller.getTicketUrgency).toHaveBeenCalled();
+        });
+    });
 });

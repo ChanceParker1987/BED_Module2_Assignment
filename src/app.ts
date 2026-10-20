@@ -1,6 +1,6 @@
 import express, { Express } from "express";
 import morgan from "morgan";
-import  ticketRoutes from "./api/v1/routes/ticketRoutes"
+import ticketRoutes from "./api/v1/routes/ticketRoutes"
 
 const app: Express = express();
 

@@ -4,42 +4,42 @@ import * as ticketService from "../services/ticketService"
 import type { Ticket } from "../../../data/ticketData";
 
 export const getAllTickets = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
+    req: Request,
+    res: Response,
+    next: NextFunction
 ): Promise<void> => {
-  try {
-    const items: Ticket[] = await ticketService.getAllTickets();
-    res.status(HTTP_STATUS.OK).json({
-      message: "Items retrieved successfully",
-      data: items,
-    });
-  } catch (error) {
-    next(error);
-  }
+    try {
+        const items: Ticket[] = await ticketService.getAllTickets();
+        res.status(HTTP_STATUS.OK).json({
+            message: "Items retrieved successfully",
+            data: items,
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
 export const getTicketByID = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
+    req: Request,
+    res: Response,
+    next: NextFunction
 ): Promise<void> => {
-  try {
-    const id = Number(req.params.id);
-    const ticket = await ticketService.findTicketById(id);
-    if (!ticket) {
-    res.status(HTTP_STATUS.NOT_FOUND).json({
-        message: "Ticket not found",
-    });
-    return;
+    try {
+        const id = Number(req.params.id);
+        const ticket = await ticketService.findTicketById(id);
+        if (!ticket) {
+            res.status(HTTP_STATUS.NOT_FOUND).json({
+                message: "Ticket not found",
+            });
+            return;
+        }
+        res.status(HTTP_STATUS.OK).json({
+            message: "Ticket retrieved",
+            data: ticket,
+        });
+    } catch (error) {
+        next(error);
     }
-    res.status(HTTP_STATUS.OK).json({
-        message: "Ticket retrieved",
-        data: ticket,
-    });
-  } catch (error) {
-    next(error);
-  }
 };
 
 export const createTicket = async (
@@ -90,128 +90,128 @@ export const createTicket = async (
 };
 
 export const updateTicket = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
+    req: Request,
+    res: Response,
+    next: NextFunction
 ): Promise<void> => {
-  try {
-    const id = Number(req.params.id);
-    if (!Number.isInteger(id) || id <= 0) {
-    res.status(HTTP_STATUS.BAD_REQUEST).json({
-        message: "Invalid ticket ID",
-    });
-    return;
-    }
+    try {
+        const id = Number(req.params.id);
+        if (!Number.isInteger(id) || id <= 0) {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: "Invalid ticket ID",
+            });
+            return;
+        }
 
-    const existingTicket = await ticketService.findTicketById(id);
+        const existingTicket = await ticketService.findTicketById(id);
 
-    if (!existingTicket) {
-        res.status(HTTP_STATUS.NOT_FOUND).json({
-            message: "Ticket not found",
-        });
-        return;
-    }
-    // Extract update fields
-    const { priority, status } = req.body;
-    // Validate priority field
-    const validPriorities = ["critical", "high", "medium", "low"];
+        if (!existingTicket) {
+            res.status(HTTP_STATUS.NOT_FOUND).json({
+                message: "Ticket not found",
+            });
+            return;
+        }
+        // Extract update fields
+        const { priority, status } = req.body;
+        // Validate priority field
+        const validPriorities = ["critical", "high", "medium", "low"];
 
-    if (priority !== undefined && !validPriorities.includes(priority)) {
-        res.status(HTTP_STATUS.BAD_REQUEST).json({
-            message: "Invalid priority. Must be one of: critical, high, medium, low",
-        });
-        return;
-    }
-    // Validate status field
+        if (priority !== undefined && !validPriorities.includes(priority)) {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: "Invalid priority. Must be one of: critical, high, medium, low",
+            });
+            return;
+        }
+        // Validate status field
         const validStatus = ["open", "in-progress", "resolved"];
 
-    if (status !== undefined && !validStatus.includes(status)) {
-        res.status(HTTP_STATUS.BAD_REQUEST).json({
-            message: "Invalid status. Must be one of: open, in-progress, resolved",
+        if (status !== undefined && !validStatus.includes(status)) {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: "Invalid status. Must be one of: open, in-progress, resolved",
+            });
+            return;
+        }
+
+        if (priority === undefined && status === undefined) {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: "At least one update field is required",
+            });
+            return;
+        }
+        // Create update data object with only the fields that can be updated
+        const updateData = {
+            ...(priority !== undefined && { priority }),
+            ...(status !== undefined && { status }),
+        };
+
+        const updatedTicket: Ticket = await ticketService.updateTicket(id, updateData);
+        res.status(HTTP_STATUS.OK).json({
+            message: "Ticket updated successfully",
+            data: updatedTicket,
         });
-        return;
-    }
-
-    if (priority === undefined && status === undefined) {
-    res.status(HTTP_STATUS.BAD_REQUEST).json({
-        message: "At least one update field is required",
-    });
-    return;
-    }
-    // Create update data object with only the fields that can be updated
-    const updateData = {
-        ...(priority !== undefined && { priority }),
-        ...(status !== undefined && { status }),
-    };
-
-    const updatedTicket: Ticket = await ticketService.updateTicket(id, updateData);
-    res.status(HTTP_STATUS.OK).json({
-      message: "Ticket updated successfully",
-      data: updatedTicket,
-    });
     } catch (error) {
         next(error);
     };
 };
 
 export const deleteTicket = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
+    req: Request,
+    res: Response,
+    next: NextFunction
 ): Promise<void> => {
-  try {
-    const id = Number(req.params.id);
+    try {
+        const id = Number(req.params.id);
 
-    if (!Number.isInteger(id) || id <= 0) {
-    res.status(HTTP_STATUS.BAD_REQUEST).json({
-        message: "Invalid ticket ID",
-    });
-    return;
-    }
-    const existingTicket = await ticketService.findTicketById(id);
+        if (!Number.isInteger(id) || id <= 0) {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: "Invalid ticket ID",
+            });
+            return;
+        }
+        const existingTicket = await ticketService.findTicketById(id);
 
-    if (!existingTicket) {
-        res.status(HTTP_STATUS.NOT_FOUND).json({
-            message: "Ticket not found",
+        if (!existingTicket) {
+            res.status(HTTP_STATUS.NOT_FOUND).json({
+                message: "Ticket not found",
+            });
+            return;
+        }
+        await ticketService.deleteTicket(id);
+        res.status(HTTP_STATUS.OK).json({
+            message: "Ticket deleted successfully",
         });
-        return;
-    }
-    await ticketService.deleteTicket(id);
-    res.status(HTTP_STATUS.OK).json({
-    message: "Ticket deleted successfully",
-    });
     } catch (error) {
         next(error);
     }
 };
 
 export const getTicketUrgency = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
+    req: Request,
+    res: Response,
+    next: NextFunction
 ): Promise<void> => {
-  try {
-    const id = Number(req.params.id);
+    try {
+        const id = Number(req.params.id);
 
-    if (!Number.isInteger(id) || id <= 0) {
-    res.status(HTTP_STATUS.BAD_REQUEST).json({
-        message: "Invalid ticket ID",
-    });
-    return;
-    }
+        if (!Number.isInteger(id) || id <= 0) {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: "Invalid ticket ID",
+            });
+            return;
+        }
 
-    const ticket = ticketService.getTicketUrgency(id);
-    if (!ticket) {
-    res.status(HTTP_STATUS.NOT_FOUND).json({
-        message: "Ticket not found",
-    });
-    return;
+        const ticket = ticketService.getTicketUrgency(id);
+        if (!ticket) {
+            res.status(HTTP_STATUS.NOT_FOUND).json({
+                message: "Ticket not found",
+            });
+            return;
+        }
+        res.status(HTTP_STATUS.OK).json({
+            message: "Ticket urgency calculated",
+            data: ticket,
+        });
+    } catch (error) {
+        next(error);
     }
-    res.status(HTTP_STATUS.OK).json({
-        message: "Ticket urgency calculated",
-        data: ticket,
-    });
-  } catch (error) {
-    next(error);
-  }
 };

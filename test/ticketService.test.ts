@@ -16,7 +16,7 @@ describe("Ticket Urgency Calculation", () => {
     });
 
     it("should calculate the correct urgency score for a high priority ticket", () => {
-        
+
         const result = getTicketUrgency(4);
 
         expect(result).toBeDefined();

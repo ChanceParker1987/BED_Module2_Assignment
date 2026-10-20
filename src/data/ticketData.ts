@@ -1,7 +1,7 @@
 /**
  * Represents a ticket in the system.
  */
-export interface Ticket{
+export interface Ticket {
     id: number;
     title: string;
     description: string;

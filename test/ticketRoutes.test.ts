@@ -11,19 +11,33 @@ app.use(express.json());
 app.use("/api/v1/tickets", routes);
 
 describe("Ticket Routes", () => {
-	afterEach(() => {
-		jest.clearAllMocks();
-	});
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
 
-	describe("GET /api/v1/tickets", () => {
-		it("should call getAll controller", async () => {
+    describe("GET /api/v1/tickets", () => {
+        it("should call getAll controller", async () => {
             jest.mocked(controller.getAllTickets).mockImplementation(
-    async (_req, res) => {
-        res.status(200).json({ data: [] });
-        }
-    );
-			await request(app).get("/api/v1/tickets");
-			expect(controller.getAllTickets).toHaveBeenCalled();
-		});
-	});
+                async (_req, res) => {
+                    res.status(200).json({ data: [] });
+                }
+            );
+            await request(app).get("/api/v1/tickets");
+            expect(controller.getAllTickets).toHaveBeenCalled();
+        });
+    });
+
+    describe("GET /api/v1/tickets/:id", () => {
+        it("should call getTicketByID controller", async () => {
+            jest.mocked(controller.getTicketByID).mockImplementation(
+                async (_req, res) => {
+                    res.status(200).json({ data: { id: 4 } });
+                }
+            );
+
+            await request(app).get("/api/v1/tickets/4");
+
+            expect(controller.getTicketByID).toHaveBeenCalled();
+        });
+    });
 });

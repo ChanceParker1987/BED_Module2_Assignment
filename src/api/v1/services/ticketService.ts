@@ -119,17 +119,24 @@ export function getTicketUrgency(id: number) {
     ticket.status === "resolved"
       ? 0
       : baseScore + (ticketAge * 5);
+  // Define urgency thresholds
+  const urgencyThresholds = {
+    critical: 80,
+    high: 55,
+    moderate: 30
+  };
   // Determine urgency message
   let urgencyLevel: string;
+
   if (ticket.status === "resolved") {
     urgencyLevel = "Minimal. Ticket resolved.";
   } else {
     urgencyLevel =
-      ticket.priority === "critical"
+      urgencyScore >= urgencyThresholds.critical
         ? "Critical. Immediate attention required."
-        : ticket.priority === "high"
+        : urgencyScore >= urgencyThresholds.high
           ? "High urgency. Prioritize resolution."
-          : ticket.priority === "medium"
+          : urgencyScore >= urgencyThresholds.moderate
             ? "Moderate. Schedule for attention."
             : "Low urgency. Address when capacity allows.";
   }

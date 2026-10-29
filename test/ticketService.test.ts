@@ -15,12 +15,12 @@ describe("Ticket Urgency Calculation", () => {
         expect(result).toBeUndefined();
     });
 
-    it("should calculate the correct urgency score for a high priority ticket", () => {
+    it("should calculate critical urgency for an aged high priority ticket", () => {
 
         const result = getTicketUrgency(4);
 
         expect(result).toBeDefined();
         expect(result?.urgencyScore).toBe(30 + (result!.ticketAge * 5));
-        expect(result?.urgencyLevel).toBe("High urgency. Prioritize resolution.");
+        expect(result?.urgencyLevel).toBe("Critical. Immediate attention required.");
     });
 });
